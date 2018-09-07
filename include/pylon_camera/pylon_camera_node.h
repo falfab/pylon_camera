@@ -43,6 +43,7 @@
 
 #include <pylon_camera/pylon_camera_parameter.h>
 #include <pylon_camera/pylon_camera.h>
+#include <pylon/gige/_BaslerGigECameraParams.h>
 
 #include <camera_control_msgs/SetBool.h>
 #include <camera_control_msgs/SetBinning.h>
@@ -185,6 +186,11 @@ protected:
      */
     bool setDecimationY(const size_t &target_decimation_y,
                         size_t &reached_decimation_y);
+
+    bool setProcessedRawEnable(bool &enabled);
+
+    bool setLightSourceSelector(std::string lightSource);
+
     /**
      * Update the exposure value on the camera
      * @param target_exposure the targeted exposure

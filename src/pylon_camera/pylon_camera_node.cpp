@@ -338,6 +338,20 @@ bool PylonCameraNode::startGrabbing()
         }
     }
 
+    if ( pylon_camera_parameter_set_.processed_raw_enable_given_ )
+    {
+        setProcessedRawEnable(pylon_camera_parameter_set_.processed_raw_enable_);
+        ROS_INFO_STREAM("Setting processed_raw_enable_given_ to "
+                        << pylon_camera_parameter_set_.processed_raw_enable_);
+    }
+
+    if ( pylon_camera_parameter_set_.light_source_given_ )
+    {
+        setLightSourceSelector(pylon_camera_parameter_set_.light_source_);
+        ROS_INFO_STREAM("Setting processed_raw_enable_given_ to "
+                        << pylon_camera_parameter_set_.light_source_);
+    }
+
     ROS_INFO_STREAM("Startup settings: "
             << "encoding = '" << pylon_camera_->currentROSEncoding() << "', "
             << "binning = [" << pylon_camera_->currentBinningX() << ", "
@@ -1198,6 +1212,78 @@ bool PylonCameraNode::setGainCallback(camera_control_msgs::SetGain::Request &req
 {
     res.success = setGain(req.target_gain, res.reached_gain);
     return true;
+}
+
+bool PylonCameraNode::setProcessedRawEnable(bool& enabled)
+{
+    boost::lock_guard<boost::recursive_mutex> lock(grab_mutex_);
+    if (!pylon_camera_->isReady())
+    {
+        ROS_WARN("Error in setProcessedRawEnable(): pylon_camera_ is not ready!");
+        return false;
+    }
+    if (pylon_camera_->setProcessedRawEnable(enabled))
+    {
+        return true;
+    }
+    else // retry till timeout
+    {
+        // wait for max 5s till the cam has updated the gamma value
+        ros::Rate r(10.0);
+        ros::Time timeout(ros::Time::now() + ros::Duration(5.0));
+        while (ros::ok())
+        {
+            if (pylon_camera_->setProcessedRawEnable(enabled))
+            {
+                return true;
+            }
+
+            if (ros::Time::now() > timeout)
+            {
+                break;
+            }
+            r.sleep();
+        }
+        ROS_ERROR_STREAM("Error in setProcessedRawEnabled(): Unable to set target "
+                         << "processedRawEnabled before timeout");
+        return false;
+    }
+}
+
+bool PylonCameraNode::setLightSourceSelector(std::string lightSource)
+{
+    boost::lock_guard<boost::recursive_mutex> lock(grab_mutex_);
+    if (!pylon_camera_->isReady())
+    {
+        ROS_WARN("Error in setLightSource(): pylon_camera_ is not ready!");
+        return false;
+    }
+    if (pylon_camera_->setLightSourceSelector(lightSource))
+    {
+        return true;
+    }
+    else // retry till timeout
+    {
+        // wait for max 5s till the cam has updated the gamma value
+        ros::Rate r(10.0);
+        ros::Time timeout(ros::Time::now() + ros::Duration(5.0));
+        while (ros::ok())
+        {
+            if (pylon_camera_->setLightSourceSelector(lightSource))
+            {
+                return true;
+            }
+
+            if (ros::Time::now() > timeout)
+            {
+                break;
+            }
+            r.sleep();
+        }
+        ROS_ERROR_STREAM("Error in setLightSourceSelector(): Unable to set target "
+                         << "processedRawEnabled before timeout");
+        return false;
+    }
 }
 
 bool PylonCameraNode::setGamma(const float& target_gamma, float& reached_gamma)

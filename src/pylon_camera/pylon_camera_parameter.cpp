@@ -244,6 +244,23 @@ void PylonCameraParameter::readFromRosParameterServer(const ros::NodeHandle& nh)
             }
         }
     }
+
+    processed_raw_enable_given_ = nh.hasParam("processed_raw_enable");
+    if (processed_raw_enable_given_)
+    {
+        nh.getParam("processed_raw_enable", processed_raw_enable_);
+        std::cout << "processed_raw_enable is given and has value " << processed_raw_enable_
+                  << std::endl;
+    }
+
+    light_source_given_ = nh.hasParam("light_source");
+    if (light_source_given_)
+    {
+        nh.getParam("light_source", light_source_);
+        std::cout << "light_source_ is given and has value " << light_source_
+                  << std::endl;
+    }
+
     // ##########################
 
     nh.param<double>("exposure_search_timeout", exposure_search_timeout_, 5.);

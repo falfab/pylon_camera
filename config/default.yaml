@@ -100,6 +100,24 @@ frame_rate: 5.0
 # exposure_auto: true
 # gain_auto: true
 
+# The Processed Raw Enable camera feature allows you to use the Color 
+# Transformation and Color Adjustment features when using a Bayer pixel format.
+# The camera's pixel format must be set to a Bayer pixel format, e.g., Bayer 12. 
+# processed_raw_enable: false
+
+# The Light Source Preset camera feature allows you to correct color shifts 
+# caused by certain light sources.
+# To select a light source preset, set the LightSourceSelector parameter to one 
+# of the following values:
+# "off":            No light source preset is selected
+# "daylight":       The camera corrects color shifts caused by daylight 
+#                   lighting that has a color temperature of about 5 000 K. 
+# "daylight6500K":  The camera corrects color shifts caused by daylight lighting 
+#                   that has a color temperature of about 6 500 K.
+# "tungsten": 	    The camera corrects color shifts caused by tungsten lighting 
+#                   that has a color temperature of about 2 500 to 3 000 K.
+# light_source: "off"
+
 ##########################################################################
 
 #  The timeout while searching the exposure which is connected to the

@@ -339,6 +339,18 @@ std::string PylonUSBCamera::typeName() const
     return "USB";
 }
 
+template <>
+bool PylonUSBCamera::setProcessedRawEnable(bool &enabled)
+{
+    return false;
+}
+
+template <>
+bool PylonUSBCamera::setLightSourceSelector(std::string selector)
+{
+    return false;
+}
+
 }  // namespace pylon_camera
 
 #endif  // PYLON_CAMERA_INTERNAL_USB_H_

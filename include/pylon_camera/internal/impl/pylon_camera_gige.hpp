@@ -396,6 +396,62 @@ std::string PylonGigECamera::typeName() const
     return "GigE";
 }
 
+template <>
+bool PylonGigECamera::setProcessedRawEnable(bool &enabled)
+{
+    if ( GenApi::IsAvailable(cam_->ProcessedRawEnable) ){
+        try
+        {
+            cam_->ProcessedRawEnable.SetValue(enabled);
+        }
+        catch (const GenICam::GenericException &e)
+        {
+            ROS_ERROR_STREAM("An exception while setting processed raw enable to "
+                            << enabled << " occurred:"
+                            << e.GetDescription());
+            return false;
+        }
+        return true;
+    }
+    return false;
+}
+
+template <>
+bool PylonGigECamera::setLightSourceSelector(std::string selector)
+{
+    if (GenApi::IsAvailable(cam_->LightSourceSelector))
+    {
+        try
+        {
+            if (selector.compare("off") == 0) 
+            {
+                cam_->LightSourceSelector.SetValue(Basler_GigECamera::LightSourceSelectorEnums::LightSourceSelector_Off);
+            }
+            else if (selector.compare("daylight") == 0) 
+            {
+                cam_->LightSourceSelector.SetValue(Basler_GigECamera::LightSourceSelectorEnums::LightSourceSelector_Daylight);
+            }
+            else if (selector.compare("tungsten") == 0)
+            {
+                cam_->LightSourceSelector.SetValue(Basler_GigECamera::LightSourceSelectorEnums::LightSourceSelector_Tungsten);
+            }
+            else if (selector.compare("daylight6500") == 0)
+            {
+                cam_->LightSourceSelector.SetValue(Basler_GigECamera::LightSourceSelectorEnums::LightSourceSelector_Daylight6500K);
+            }
+        }
+        catch (const GenICam::GenericException &e)
+        {
+            ROS_ERROR_STREAM("An exception while setting processed raw enable to "
+                             << selector << " occurred:"
+                             << e.GetDescription());
+            return false;
+        }
+        return true;
+    }
+    return false;
+}
+
 }  // namespace pylon_camera
 
 #endif  // PYLON_CAMERA_INTERNAL_GIGE_H_

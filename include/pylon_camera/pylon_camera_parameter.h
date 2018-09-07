@@ -287,14 +287,27 @@ public:
      */
     bool auto_flash_;
 
-protected:
     /**
+     * Flag that indicates if the camera need to abilitate processed raw
+     */
+    bool processed_raw_enable_;
+    bool processed_raw_enable_given_;
+
+    /**
+     * Flag that indicates if the camera need to abilitate processed raw
+     */
+    std::string light_source_;
+    bool light_source_given_;
+
+    protected:
+        /**
      * Validates the parameter set found on the ros parameter server.
      * If invalid parameters can be detected, the interface will reset them
      * to the default values.
      * @param nh the ros::NodeHandle to use
      */
-    void validateParameterSet(const ros::NodeHandle& nh);
+        void
+        validateParameterSet(const ros::NodeHandle &nh);
 
     /**
      * The tf frame under which the images were published

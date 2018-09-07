@@ -99,6 +99,10 @@ public:
 
     virtual bool setUserOutput(const int& output_id, const bool& value);
 
+    virtual bool setProcessedRawEnable(bool& enabled);
+
+    virtual bool setLightSourceSelector(std::string lightSource);
+
     virtual size_t currentBinningX();
 
     virtual size_t currentBinningY();

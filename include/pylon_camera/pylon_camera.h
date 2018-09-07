@@ -245,6 +245,23 @@ public:
     virtual bool setUserOutput(const int& output_id, const bool& value) = 0;
 
     /**
+     * @brief Set the Processed Raw Enable feature
+     * 
+     * @param enabled 
+     * @return true if it could be enabled
+     */
+    virtual bool setProcessedRawEnable(bool& enabled) = 0;
+
+    /**
+     * @brief Set the Light Source Selector object
+     * 
+     * @param enabled 
+     * @return true 
+     * @return false 
+     */
+    virtual bool setLightSourceSelector(std::string enabled) = 0;
+
+    /**
      * Returns the current horizontal binning_x setting.
      * @return the horizontal binning_x setting.
      */
