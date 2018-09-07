@@ -145,6 +145,25 @@ public:
                              size_t& reached_binning_y) = 0;
 
     /**
+     * Sets the target horizontal decimation_x factor
+     * @param target_decimation_x the target horizontal decimation_x factor.
+     * @param reached_decimation_x the reached horizontal decimation_x factor.
+     * @return false if a communication error occured or true otherwise.
+     */
+    virtual bool setDecimationX(const size_t& target_decimation_x,
+                                size_t& reached_decimation_x) = 0;
+
+    /**
+     * Sets the target vertical decimation_y factor
+     * @param target_decimation_y the target vertical decimation_y factor.
+     * @param reached_decimation_y the reached vertical decimation_y factor.
+     * @return false if a communication error occured or true otherwise.
+     */
+
+    virtual bool setDecimationY(const size_t &target_decimation_y,
+                                size_t &reached_decimation_y) = 0;
+
+    /**
      * Detects the supported image pixel encodings of the camera an stores
      * them in a vector.
      * @return a list of strings describing the supported encodings in GenAPI
@@ -236,6 +255,10 @@ public:
      * @return the vertical binning_y setting.
      */
     virtual size_t currentBinningY() = 0;
+
+    virtual size_t currentDecimationX() = 0;
+
+    virtual size_t currentDecimationY() = 0;
 
     /**
      * Get the camera image encoding according to sensor_msgs::image_encodings

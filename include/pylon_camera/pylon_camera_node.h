@@ -165,6 +165,26 @@ protected:
      */
     bool setBinningCallback(camera_control_msgs::SetBinning::Request &req,
                             camera_control_msgs::SetBinning::Response &res);
+
+    /**
+     * Update the horizontal decimation_x factor to get downsampled images
+     * 
+     * @param target_decimation_x the target horizontal decimation_x factor
+     * @param reached_decimation_x the horizontal decimation_x factor that could be reached
+     * @return true if the targeted decimation could be reached
+     */
+    bool setDecimationX(const size_t& target_decimation_x,
+                        size_t& reached_decimation_x);
+
+    /**
+     * Update the vertical decimation_y factor to get downsampled images
+     * 
+     * @param target_decimation_y the target vertical decimation_y factor
+     * @param reached_decimation_y the vertical decimation_y factor that could be reached
+     * @return true if the targeted decimation could be reached
+     */
+    bool setDecimationY(const size_t &target_decimation_y,
+                        size_t &reached_decimation_y);
     /**
      * Update the exposure value on the camera
      * @param target_exposure the targeted exposure

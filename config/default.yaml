@@ -28,6 +28,13 @@ camera_info_url: ""
 # binning_x: 1
 # binning_y: 1
 
+# The Decimation camera feature allows you to reduce the number of sensor pixel 
+# columns or rows that are transmitted by the camera.
+# This procedure is also known as "subsampling". It reduces the amount of data 
+# to be transferred and may increase the camera's frame rate.
+# decimation_x: 1
+# decimation_y: 1
+
 #  The desired publisher frame rate if listening to the topics.
 #  This parameter can only be set once at startup
 #  Calling the GrabImages-Action can result in a higher framerate

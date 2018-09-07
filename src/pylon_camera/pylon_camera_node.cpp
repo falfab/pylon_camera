@@ -269,6 +269,22 @@ bool PylonCameraNode::startGrabbing()
             << "be adapted, so that the binning_y value in this msg remains 1");
     }
 
+    if ( pylon_camera_parameter_set_.decimation_x_given_ )
+    {
+        size_t reached_decimation_x;
+        setDecimationX(pylon_camera_parameter_set_.decimation_x_, reached_decimation_x);
+        ROS_INFO_STREAM("Setting horizontal decimation_x to "
+                        << pylon_camera_parameter_set_.decimation_x_);
+    }
+
+    if (pylon_camera_parameter_set_.decimation_y_given_)
+    {
+        size_t reached_decimation_y;
+        setDecimationY(pylon_camera_parameter_set_.decimation_y_, reached_decimation_y);
+        ROS_INFO_STREAM("Setting horizontal decimation_y to "
+                        << pylon_camera_parameter_set_.decimation_y_);
+    }
+
     if ( pylon_camera_parameter_set_.exposure_given_ )
     {
         float reached_exposure;
@@ -999,6 +1015,97 @@ bool PylonCameraNode::setBinningCallback(camera_control_msgs::SetBinning::Reques
     res.reached_binning_x = static_cast<uint32_t>(reached_binning_x);
     res.reached_binning_y = static_cast<uint32_t>(reached_binning_y);
     res.success = success_x && success_y;
+    return true;
+}
+
+bool PylonCameraNode::setDecimationX(const size_t &target_decimation_x,
+                                  size_t &reached_decimation_x)
+{
+    boost::lock_guard<boost::recursive_mutex> lock(grab_mutex_);
+    if (!pylon_camera_->setDecimationX(target_decimation_x, reached_decimation_x))
+    {
+        // retry till timeout
+        ros::Rate r(10.0);
+        ros::Time timeout(ros::Time::now() + ros::Duration(2.0));
+        while (ros::ok())
+        {
+            if (pylon_camera_->setDecimationX(target_decimation_x, reached_decimation_x))
+            {
+                break;
+            }
+            if (ros::Time::now() > timeout)
+            {
+                ROS_ERROR_STREAM("Error in setDecimationX(): Unable to set target "
+                                 << "decimation_x factor before timeout");
+                CameraInfoPtr cam_info(new CameraInfo(camera_info_manager_->getCameraInfo()));
+                cam_info->width = pylon_camera_->imageCols();
+                camera_info_manager_->setCameraInfo(*cam_info);
+                img_raw_msg_.width = pylon_camera_->imageCols();
+                // step = full row length in bytes, img_size = (step * rows), imagePixelDepth
+                // already contains the number of channels
+                img_raw_msg_.step = img_raw_msg_.width * pylon_camera_->imagePixelDepth();
+                return false;
+            }
+            r.sleep();
+        }
+    }
+    CameraInfoPtr cam_info(new CameraInfo(camera_info_manager_->getCameraInfo()));
+    cam_info->width = pylon_camera_->imageCols();
+    camera_info_manager_->setCameraInfo(*cam_info);
+    img_raw_msg_.width = pylon_camera_->imageCols();
+    // step = full row length in bytes, img_size = (step * rows), imagePixelDepth
+    // already contains the number of channels
+    img_raw_msg_.step = img_raw_msg_.width * pylon_camera_->imagePixelDepth();
+    setupSamplingIndices(sampling_indices_,
+                         pylon_camera_->imageRows(),
+                         pylon_camera_->imageCols(),
+                         pylon_camera_parameter_set_.downsampling_factor_exp_search_);
+    return true;
+}
+
+bool PylonCameraNode::setDecimationY(const size_t &target_decimation_y,
+                                     size_t &reached_decimation_y)
+{
+    boost::lock_guard<boost::recursive_mutex> lock(grab_mutex_);
+    if (!pylon_camera_->setDecimationY(target_decimation_y, reached_decimation_y))
+    {
+        // retry till timeout
+        ros::Rate r(10.0);
+        ros::Time timeout(ros::Time::now() + ros::Duration(2.0));
+        while (ros::ok())
+        {
+            if (pylon_camera_->setDecimationY(target_decimation_y, reached_decimation_y))
+            {
+                break;
+            }
+            if (ros::Time::now() > timeout)
+            {
+                ROS_ERROR_STREAM("Error in setDecimationY(): Unable to set target "
+                                 << "decimation_x factor before timeout");
+                CameraInfoPtr cam_info(new CameraInfo(camera_info_manager_->getCameraInfo()));
+                cam_info->height = pylon_camera_->imageRows();
+                camera_info_manager_->setCameraInfo(*cam_info);
+                img_raw_msg_.height = pylon_camera_->imageRows();
+                // step = full row length in bytes, img_size = (step * rows), imagePixelDepth
+                // already contains the number of channels
+                img_raw_msg_.step = img_raw_msg_.width * pylon_camera_->imagePixelDepth();
+                return false;
+            }
+            r.sleep();
+        }
+    }
+    CameraInfoPtr cam_info(new CameraInfo(camera_info_manager_->getCameraInfo()));
+    // cam_info->binning_y = pylon_camera_->currentBinningY();
+    cam_info->height = pylon_camera_->imageRows();
+    camera_info_manager_->setCameraInfo(*cam_info);
+    img_raw_msg_.height = pylon_camera_->imageRows();
+    // step = full row length in bytes, img_size = (step * rows), imagePixelDepth
+    // already contains the number of channels
+    img_raw_msg_.step = img_raw_msg_.width * pylon_camera_->imagePixelDepth();
+    setupSamplingIndices(sampling_indices_,
+                         pylon_camera_->imageRows(),
+                         pylon_camera_->imageCols(),
+                         pylon_camera_parameter_set_.downsampling_factor_exp_search_);
     return true;
 }
 

@@ -125,6 +125,32 @@ size_t PylonCameraImpl<CameraTraitT>::currentBinningY()
 }
 
 template <typename CameraTraitT>
+size_t PylonCameraImpl<CameraTraitT>::currentDecimationX()
+{
+    if (GenApi::IsAvailable(cam_->DecimationHorizontal))
+    {
+        return static_cast<size_t>(cam_->DecimationHorizontal.GetValue());
+    }
+    else
+    {
+        return 1;
+    }
+}
+
+template <typename CameraTraitT>
+size_t PylonCameraImpl<CameraTraitT>::currentDecimationY()
+{
+    if (GenApi::IsAvailable(cam_->DecimationVertical))
+    {
+        return static_cast<size_t>(cam_->DecimationVertical.GetValue());
+    }
+    else
+    {
+        return 1;
+    }
+}
+
+template <typename CameraTraitT>
 std::string PylonCameraImpl<CameraTraitT>::currentROSEncoding() const
 {
     std::string gen_api_encoding(cam_->PixelFormat.ToString().c_str());
@@ -614,6 +640,102 @@ bool PylonCameraImpl<CameraTraitT>::setBinningY(const size_t& target_binning_y,
         ROS_ERROR_STREAM("An exception while setting target vertical "
                 << "binning_y factor to " << target_binning_y << " occurred: "
                 << e.GetDescription());
+        return false;
+    }
+    return true;
+}
+
+template <typename CameraTraitT>
+bool PylonCameraImpl<CameraTraitT>::setDecimationX(const size_t &target_decimation_x,
+                                                size_t &reached_decimation_x)
+{
+    try
+    {
+        if (GenApi::IsAvailable(cam_->DecimationHorizontal))
+        {
+            cam_->StopGrabbing();
+            size_t decimation_x_to_set = target_decimation_x;
+            if (decimation_x_to_set < cam_->DecimationHorizontal.GetMin())
+            {
+                ROS_WARN_STREAM("Desired horizontal decimation_x factor("
+                                << decimation_x_to_set << ") unreachable! Setting to lower "
+                                << "limit: " << cam_->DecimationHorizontal.GetMin());
+                decimation_x_to_set = cam_->DecimationHorizontal.GetMin();
+            }
+            else if (decimation_x_to_set > cam_->DecimationHorizontal.GetMax())
+            {
+                ROS_WARN_STREAM("Desired horizontal decimation_x factor("
+                                << decimation_x_to_set << ") unreachable! Setting to upper "
+                                << "limit: " << cam_->DecimationHorizontal.GetMax());
+                decimation_x_to_set = cam_->DecimationHorizontal.GetMax();
+            }
+            cam_->DecimationHorizontal.SetValue(decimation_x_to_set);
+            reached_decimation_x = currentDecimationX();
+            cam_->StartGrabbing();
+            std::cout << "-----------" << cam_->Width.GetValue() << std::endl;
+            img_cols_ = static_cast<size_t>(cam_->Width.GetValue());
+            img_size_byte_ = img_cols_ * img_rows_ * imagePixelDepth();
+        }
+        else
+        {
+            ROS_WARN_STREAM("Camera does not support decimation. Will keep the "
+                            << "current settings");
+            reached_decimation_x = currentDecimationX();
+        }
+    }
+    catch (const GenICam::GenericException &e)
+    {
+        ROS_ERROR_STREAM("An exception while setting target horizontal "
+                         << "decimation_x factor to " << target_decimation_x << " occurred: "
+                         << e.GetDescription());
+        return false;
+    }
+    return true;
+}
+
+template <typename CameraTraitT>
+bool PylonCameraImpl<CameraTraitT>::setDecimationY(const size_t &target_decimation_y,
+                                                   size_t &reached_decimation_y)
+{
+    try
+    {
+        if (GenApi::IsAvailable(cam_->DecimationVertical))
+        {
+            cam_->StopGrabbing();
+            size_t decimation_y_to_set = target_decimation_y;
+            if (decimation_y_to_set < cam_->DecimationVertical.GetMin())
+            {
+                ROS_WARN_STREAM("Desired vertical decimation_y factor("
+                                << decimation_y_to_set << ") unreachable! Setting to lower "
+                                << "limit: " << cam_->DecimationVertical.GetMin());
+                decimation_y_to_set = cam_->DecimationVertical.GetMin();
+            }
+            else if (decimation_y_to_set > cam_->DecimationVertical.GetMax())
+            {
+                ROS_WARN_STREAM("Desired vertical decimation_y factor("
+                                << decimation_y_to_set << ") unreachable! Setting to upper "
+                                << "limit: " << cam_->DecimationVertical.GetMax());
+                decimation_y_to_set = cam_->DecimationVertical.GetMax();
+            }
+            cam_->DecimationVertical.SetValue(decimation_y_to_set);
+            reached_decimation_y = currentDecimationY();
+            cam_->StartGrabbing();
+            std::cout << "-----------" << cam_->Height.GetValue() << std::endl;
+            img_rows_ = static_cast<size_t>(cam_->Height.GetValue());
+            img_size_byte_ = img_cols_ * img_rows_ * imagePixelDepth();
+        }
+        else
+        {
+            ROS_WARN_STREAM("Camera does not support decimation. Will keep the "
+                            << "current settings");
+            reached_decimation_y = currentDecimationY();
+        }
+    }
+    catch (const GenICam::GenericException &e)
+    {
+        ROS_ERROR_STREAM("An exception while setting target vertical "
+                         << "decimation_y factor to " << target_decimation_y << " occurred: "
+                         << e.GetDescription());
         return false;
     }
     return true;

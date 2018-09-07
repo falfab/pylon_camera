@@ -76,6 +76,12 @@ public:
     virtual bool setBinningY(const size_t& target_binning_y,
                              size_t& reached_binning_y);
 
+    virtual bool setDecimationX(const size_t &target_decimation_x,
+                             size_t &reached_decimation_x);
+
+    virtual bool setDecimationY(const size_t &target_decimation_y,
+                                size_t &reached_decimation_y);
+
     virtual bool setImageEncoding(const std::string& target_ros_encoding);
 
     virtual bool setExposure(const float& target_exposure, float& reached_exposure);
@@ -96,6 +102,10 @@ public:
     virtual size_t currentBinningX();
 
     virtual size_t currentBinningY();
+
+    virtual size_t currentDecimationX();
+
+    virtual size_t currentDecimationY();
 
     virtual std::vector<std::string> detectAvailableImageEncodings();
 

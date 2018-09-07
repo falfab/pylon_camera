@@ -130,6 +130,19 @@ public:
     bool binning_x_given_;
     bool binning_y_given_;
 
+    /** The Decimation camera feature allows you to reduce the number of sensor 
+     * pixel columns or rows that are transmitted by the camera.
+     */
+    size_t decimation_x_;
+    size_t decimation_y_;
+
+    /**
+     * Flags which indicate if the decimation factors are provided and hence
+     * should be set during startup
+     */
+    bool decimation_x_given_;
+    bool decimation_y_given_;
+
     /**
      * Factor that describes the image downsampling to speed up the exposure
      * search to find the desired brightness.
