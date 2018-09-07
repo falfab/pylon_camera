@@ -341,14 +341,15 @@ bool PylonCameraNode::startGrabbing()
     if ( pylon_camera_parameter_set_.processed_raw_enable_given_ )
     {
         setProcessedRawEnable(pylon_camera_parameter_set_.processed_raw_enable_);
-        ROS_INFO_STREAM("Setting processed_raw_enable_given_ to "
-                        << pylon_camera_parameter_set_.processed_raw_enable_);
+        ROS_INFO_STREAM("Setting Processed raw to "
+                        << (pylon_camera_parameter_set_.processed_raw_enable_ ? 
+                        "true" : "false"));
     }
 
     if ( pylon_camera_parameter_set_.light_source_given_ )
     {
         setLightSourceSelector(pylon_camera_parameter_set_.light_source_);
-        ROS_INFO_STREAM("Setting processed_raw_enable_given_ to "
+        ROS_INFO_STREAM("Setting light source to "
                         << pylon_camera_parameter_set_.light_source_);
     }
 

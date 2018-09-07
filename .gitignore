@@ -2,11 +2,6 @@
 ## folders ##
 #############
 build
-.vscode
-left.yaml
-right.yaml
-left.launch
-right.launch
 
 #############
 ##  files  ##

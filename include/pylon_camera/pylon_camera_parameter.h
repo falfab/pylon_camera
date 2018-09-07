@@ -294,7 +294,7 @@ public:
     bool processed_raw_enable_given_;
 
     /**
-     * Flag that indicates if the camera need to abilitate processed raw
+     * String that indicates if the camera need to do light color correction
      */
     std::string light_source_;
     bool light_source_given_;

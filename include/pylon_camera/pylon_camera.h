@@ -273,8 +273,16 @@ public:
      */
     virtual size_t currentBinningY() = 0;
 
+    /**
+     * Returns the current horizontal decimation_x setting.
+     * @return the horizontal decimation_x setting.
+     */
     virtual size_t currentDecimationX() = 0;
 
+    /**
+     * Returns the current vertical decimation_y setting.
+     * @return the vertical decimation_y setting.
+     */
     virtual size_t currentDecimationY() = 0;
 
     /**

@@ -407,7 +407,7 @@ bool PylonGigECamera::setProcessedRawEnable(bool &enabled)
         catch (const GenICam::GenericException &e)
         {
             ROS_ERROR_STREAM("An exception while setting processed raw enable to "
-                            << enabled << " occurred:"
+                            << (enabled ? "true" : "false" )<< " occurred:"
                             << e.GetDescription());
             return false;
         }
@@ -442,7 +442,7 @@ bool PylonGigECamera::setLightSourceSelector(std::string selector)
         }
         catch (const GenICam::GenericException &e)
         {
-            ROS_ERROR_STREAM("An exception while setting processed raw enable to "
+            ROS_ERROR_STREAM("An exception while setting processed light source to "
                              << selector << " occurred:"
                              << e.GetDescription());
             return false;

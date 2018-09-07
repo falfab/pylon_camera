@@ -81,6 +81,9 @@ All parameters are listed in the default config file:  ``config/default.yaml``
 - **binning_x & binning_y**
   Binning factor to get downsampled images. It refers here to any camera setting which combines rectangular neighborhoods of pixels into larger "super-pixels." It reduces the resolution of the output image to (width / binning_x) x (height / binning_y). The default values binning_x = binning_y = 0 are considered the same as binning_x = binning_y = 1 (no subsampling).
 
+- **decimation_x & decimation_y**
+  The Decimation camera feature allows you to reduce the number of sensor pixel columns or rows that are transmitted by the camera. This procedure is also known as "subsampling". It reduces the amount of data to be transferred and may increase the camera's frame rate.
+
 - **downsampling_factor_exposure_search**
   To speed up the exposure search, the mean brightness is not calculated on the entire image, but on a subset instead. The image is downsampled until a desired window hight is reached. The window hight is calculated out of the image height divided by the downsampling_factor_exposure search
 
@@ -112,6 +115,12 @@ The following settings do **NOT** have to be set. Each camera has default values
 
 - **exposure_auto & gain_auto**
   Only relevant, if '**brightness**' is set: If the camera should try to reach and / or keep the brightness, hence adapting to changing light conditions, at least one of the following flags must be set. If both are set, the interface will use the profile that tries to keep the gain at minimum to reduce white noise. The exposure_auto flag indicates, that the desired brightness will be reached by adapting the exposure time. The gain_auto flag indicates, that the desired brightness will be reached by adapting the gain.
+
+- **processed_raw_enable**
+  Only relevant, if the camera's pixel format is '**Bayer 12**'. It allows you to use the Color Transformation and Color Adjustment features when using a Bayer pixel format.
+
+- **light_source**
+  It allows you to correct color shifts caused by certain light sources. The supported light_source values are: 'off', 'daylight', 'daylight6500k', 'tungsten'.
 
 **Optional and device specific parameter**
 

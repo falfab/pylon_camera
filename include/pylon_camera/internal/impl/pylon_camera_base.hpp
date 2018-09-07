@@ -672,7 +672,6 @@ bool PylonCameraImpl<CameraTraitT>::setDecimationX(const size_t &target_decimati
             cam_->DecimationHorizontal.SetValue(decimation_x_to_set);
             reached_decimation_x = currentDecimationX();
             cam_->StartGrabbing();
-            std::cout << "-----------" << cam_->Width.GetValue() << std::endl;
             img_cols_ = static_cast<size_t>(cam_->Width.GetValue());
             img_size_byte_ = img_cols_ * img_rows_ * imagePixelDepth();
         }
@@ -720,7 +719,6 @@ bool PylonCameraImpl<CameraTraitT>::setDecimationY(const size_t &target_decimati
             cam_->DecimationVertical.SetValue(decimation_y_to_set);
             reached_decimation_y = currentDecimationY();
             cam_->StartGrabbing();
-            std::cout << "-----------" << cam_->Height.GetValue() << std::endl;
             img_rows_ = static_cast<size_t>(cam_->Height.GetValue());
             img_size_byte_ = img_cols_ * img_rows_ * imagePixelDepth();
         }

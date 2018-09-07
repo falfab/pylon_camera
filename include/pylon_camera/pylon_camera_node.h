@@ -187,8 +187,20 @@ protected:
     bool setDecimationY(const size_t &target_decimation_y,
                         size_t &reached_decimation_y);
 
+    /**
+     * Update the processed_raw_enable flag
+     * 
+     * @param enabled the value of the flag
+     * @return true if it could change the value
+     */
     bool setProcessedRawEnable(bool &enabled);
 
+    /**
+     * Set the Light Source Selector color correction
+     * 
+     * @param lightSource the value of color correction to apply
+     * @return true if it could change the color correction
+     */
     bool setLightSourceSelector(std::string lightSource);
 
     /**
